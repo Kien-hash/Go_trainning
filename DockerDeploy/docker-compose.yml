@@ -1,0 +1,55 @@
+version: "3"
+
+networks: 
+  my-network:
+    driver: bridge
+
+services:
+  database: 
+    image: mysql:5.7
+    hostname: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      DATABASE_USER_NAME: t
+      DATABASE_PASSWORD: 1
+      MYSQL_DATABASE: testdb
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks: 
+      - my-network
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 20s
+      retries: 3
+
+  restful-server:
+    container_name: restful-server
+    build: 
+      dockerfile: Dockerfile
+      context: ./resful-server
+    hostname: restful-server
+    restart: always
+    ports:
+      - 8080:8080
+    networks: 
+      - my-network
+    depends_on: 
+      "database":
+        condition: service_healthy
+
+  websocket-server:
+    container_name: websocket-server
+    build: 
+      dockerfile: Dockerfile
+      context: ./ws-server
+    hostname: websocket-server
+    restart: always
+    ports: 
+      - 8000:8000
+    networks: 
+      - my-network
+    depends_on: 
+      "database":
+        condition: service_healthy

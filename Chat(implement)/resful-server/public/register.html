@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Register</title>
+</head>
+
+<body>
+   <h1>This is Sign in page</h1>
+   <input id="user-name" type="text" placeholder="Username">
+   <br />
+   <input id="pass-word" type="password" placeholder="Password">
+   <br />
+   <input id="firstname" type="text" placeholder="First Name">
+   <br />
+   <input id="lastname" type="text" placeholder="Last Name">
+   <br />
+   <button id="sign-btn" onclick="Signin()">Sign up</button>
+   <br />
+   <button id="log-in" onclick="Login()">Back to Sign in page</button>
+</body>
+
+<script type="text/javascript">
+   function Login() {
+      window.location.replace("http://localhost:8080");
+   }
+
+   function hashCode(s) {
+      let h;
+      for (let i = 0; i < s.length; i++)
+         h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+      return h;
+   }
+
+   function Signin() {
+      var pwd = document.getElementById("pass-word").value;
+
+      var data = JSON.stringify({
+         "id": 123,
+         "username": document.getElementById("user-name").value,
+         "passwords": hashCode(pwd).toString(),
+         "firstname": document.getElementById("firstname").value,
+         "lastname": document.getElementById("lastname").value
+      });
+
+      console.log(hashCode(pwd))
+
+      var xhr = new XMLHttpRequest();
+      xhr.withCredentials = true;
+
+      xhr.addEventListener("readystatechange", function () {
+         if (this.readyState === 4) {
+            let res = this.response;
+            console.log(res);
+            let str = "Register successfully!";
+            if (str.trim() == res.trim()) {
+               let x = confirm(res);
+               if (x == true) {
+                  window.location.replace("http://localhost:8080");
+               }
+            } else {
+               alert("Register failure, please check your username!")
+            }
+         }
+
+      });
+
+      xhr.open("POST", "http://localhost:8080/register");
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("cache-control", "no-cache");
+      xhr.setRequestHeader("Postman-Token", "5c4105ad-b1b0-4b83-b85d-4f6e64deddf5");
+
+      xhr.send(data);
+   }
+</script>
+
+</html>

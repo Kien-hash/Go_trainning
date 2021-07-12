@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>This is log in page</title>
+</head>
+
+<body>
+   <h1>This is log in page</h1>
+   <input id="username" type="text" placeholder="Username">
+   <br />
+   <input id="password" type="password" placeholder="Password">
+   <br />
+   <button id="login-btn" onclick="Login()">Log in</button>
+   <button id="sign-btn" onclick="Signin()">Sign in</button>
+   <br />
+   <textarea id="thong-bao" readOnly="true"></textarea>
+</body>
+<script>
+   function Login() {
+      let username = document.getElementById('username').value;
+      let password = document.getElementById('password').value;
+      let thong_bao = document.getElementById('thong-bao');
+      var data = JSON.stringify({
+         "username": username,
+         "passwords": hashCode(password).toString(),
+      });
+      console.log(hashCode(password).toString());
+
+      var xhr = new XMLHttpRequest();
+      xhr.withCredentials = true;
+
+      xhr.addEventListener("readystatechange", function () {
+         if (this.readyState === 4) {
+            let str = 'Invalid username or password';
+            let res = this.responseText;
+            if (str.trim() === res.trim()) {
+               thong_bao.value = "Invalid username or password";
+            } else {
+               thong_bao.value = "Log in successfully";
+               sessionStorage.setItem('userInfo', res);
+               let info = JSON.parse(sessionStorage.getItem('userInfo'));
+
+               var data = null;
+
+               var xhr = new XMLHttpRequest();
+               xhr.withCredentials = true;
+
+               xhr.addEventListener("readystatechange", function () {
+                  if (this.readyState === 4) {
+                     document.open();
+                     document.write(this.responseText);
+                     document.close();
+
+                  }
+               });
+
+               xhr.open("GET", "http://localhost:8080/home");
+               xhr.setRequestHeader("Authorization", "Bearer " + info.token);
+               xhr.setRequestHeader("cache-control", "no-cache");
+               xhr.setRequestHeader("Postman-Token", "5b7172e6-c222-42c4-83d8-0e5d9ec9b2ba");
+
+               xhr.send(data);
+
+            }
+         }
+      });
+
+      xhr.open("POST", "http://localhost:8080/login");
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("cache-control", "no-cache");
+
+      xhr.send(data);
+   }
+
+
+   function Signin() {
+      window.location.replace("http://localhost:8080/register");
+   }
+
+   function hashCode(s) {
+      let h;
+      for (let i = 0; i < s.length; i++)
+         h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+
+      return h;
+   }
+
+</script>
+
+</html>

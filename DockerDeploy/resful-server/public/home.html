@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+
+</head>
+
+<body>
+  <h1>This is home page</h1>
+  <p>Online user:</p>
+  <div id="ulUser">
+
+  </div>
+  <button type="button" id="chat-button" onclick="Chat()">Chat</button>
+  <br />
+
+  <div id="openChat" hidden>
+    <form>
+      <h2 id="roomName">Chat</h2>
+      <label for="msg"><b>Message</b></label>
+      <br />
+      <textarea id="text-area" cols="40" rows="10" readonly placeholder="Message return here"></textarea>
+      <textarea id="room-users" cols="10" rows="10" readonly placeholder="Room's users"></textarea>
+      <br />
+      <input type="text" id="inputMessage" placeholder="Message">
+      <button type="button" id="send-button" onclick="Send()">Send Message</button>
+      <br />
+      <button type="button" id="disconnect-button" onclick="outRoom()">Disconnect</button>
+    </form>
+  </div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="./js/home.js"></script>
+
+</html>
